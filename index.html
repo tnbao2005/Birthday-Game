@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You, B ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: black; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script>
+const config = {
+    type: Phaser.AUTO,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    physics: { default: 'arcade', arcade: { gravity: { y: 500 }, debug: false } },
+    scene: { preload, create, update }
+};
+
+let player, messages, messageIndex = 0;
+const messageText = [
+    "Hi babe, I know I'm not there with you right now but this is the best I could do for your birthday",
+    "We've been together for 1,859 days and I hope this continues to go up",
+    "I haven't been a good partner, not being there for you in these special occasions",
+    "I study abroad hoping to have a future with money not being a concern",
+    "I hope you understand that and I just wanted to say Happy Birthday",
+    "It's been rough for both of us but no matter what I'll always be here for you",
+    "Hope you have the happiest birthday filled with love and joy ❤️",
+    "Love You, B <3"
+];
+
+function preload() {
+    this.load.spritesheet('dude', 'https://i.imgur.com/g2zBAYk.png', { frameWidth: 32, frameHeight: 48 });
+}
+
+function create() {
+    this.cameras.main.setBackgroundColor('#000');
+    
+    player = this.physics.add.sprite(100, config.height - 150, 'dude');
+    player.setCollideWorldBounds(true);
+    player.setVelocityX(50);
+    
+    this.anims.create({
+        key: 'walk',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frameRate: 6,
+        repeat: -1
+    });
+    player.anims.play('walk', true);
+
+    messages = this.add.text(config.width / 2, config.height / 2, messageText[messageIndex], {
+        fontSize: '24px',
+        fontFamily: 'Arial',
+        color: '#ffffff',
+        wordWrap: { width: config.width - 100, useAdvancedWrap: true },
+        align: 'center'
+    }).setOrigin(0.5).setAlpha(0);
+    
+    this.time.addEvent({ delay: 3000, callback: showNextMessage, callbackScope: this, loop: true });
+}
+
+function showNextMessage() {
+    if (messageIndex < messageText.length) {
+        messages.setText(messageText[messageIndex]);
+        messages.setAlpha(1);
+        messageIndex++;
+        this.time.delayedCall(2500, () => { messages.setAlpha(0); });
+    }
+}
+
+function update() {
+    this.cameras.main.scrollX = player.x - config.width / 4;
+}
+
+const game = new Phaser.Game(config);
+</script>
+</body>
+</html>
