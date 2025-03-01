@@ -6,7 +6,7 @@
     <title>For You, B ❤️</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: black; }
+        body { margin: 0; overflow: hidden; background: cyan; }
         canvas { display: block; width: 100%; height: 100%; }
     </style>
 </head>
@@ -39,7 +39,6 @@ const messageText = [
 ];
 
 function preload() {
-    this.load.spritesheet('dude', 'https://i.imgur.com/g2zBAYk.png', { frameWidth: 32, frameHeight: 48 });
     this.load.image('platform', 'https://i.imgur.com/rJL9mzG.png'); // Platform image
     this.load.audio('backgroundMusic', 'https://www.youtube.com/watch?v=xGz-E8oqD9w'); // Background music
 }
@@ -49,33 +48,33 @@ function create() {
     const music = this.sound.add('backgroundMusic');
     music.play();
 
-    this.cameras.main.setBackgroundColor('#000');
+    // Set background color to cyan (sky)
+    this.cameras.main.setBackgroundColor('#00bcd4');
     
-    // Platform
+    // Platform (green platform)
     platform = this.physics.add.staticGroup();
     platform.create(config.width / 2, config.height - 50, 'platform').setScale(1).refreshBody();
-    
-    // Player setup
-    player = this.physics.add.sprite(100, config.height - 150, 'dude');
+
+    // Player setup: purple dot with light pink head
+    player = this.physics.add.sprite(config.width / 2, config.height - 150, null);
     player.setCollideWorldBounds(true);
     player.setBounce(0.2);
     this.physics.add.collider(player, platform); // Collide with platform
     
+    // Create the body (purple dot) and head (light pink dot)
+    let body = this.add.circle(0, 0, 30, 0x9b59b6); // Purple body
+    let head = this.add.circle(0, -40, 10, 0xffc0cb); // Light pink head
+    player.setSize(30, 40); // Size of the whole character (body + head)
+    player.addChild(body);
+    player.addChild(head);
+
     player.setVelocityX(50);
-    
-    this.anims.create({
-        key: 'walk',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-        frameRate: 6,
-        repeat: -1
-    });
-    player.anims.play('walk', true);
 
     // Centered text
     messages = this.add.text(config.width / 2, config.height / 2, messageText[messageIndex], {
         fontSize: '24px',
         fontFamily: 'Arial',
-        color: '#ffffff',
+        color: '#000000', // Black text for visibility
         wordWrap: { width: config.width - 100, useAdvancedWrap: true },
         align: 'center'
     }).setOrigin(0.5).setAlpha(0);
