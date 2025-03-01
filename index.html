@@ -12,8 +12,8 @@
 </head>
 <body>
 <!-- Background Music -->
-<audio id="backgroundMusic" autoplay loop>
-    <source src="https://www.youtube.com/watch?v=xGz-E8oqD9w?autoplay=1" type="audio/mp4">
+<audio id="backgroundMusic" preload="auto">
+    <source src="https://raw.githubusercontent.com/tnbao2005/Birthday-Game/refs/heads/main/assets/bgMusic.mp3" type="audio/mp3">
     Your browser does not support the audio tag.
 </audio>
 
@@ -40,13 +40,15 @@ const messageText = [
 
 function preload() {
     this.load.image('platform', 'https://i.imgur.com/rJL9mzG.png'); // Platform image
-    this.load.audio('backgroundMusic', 'https://www.youtube.com/watch?v=xGz-E8oqD9w'); // Background music
+    this.load.audio('backgroundMusic', 'https://raw.githubusercontent.com/tnbao2005/Birthday-Game/refs/heads/main/assets/bgMusic.mp3'); // Correct GitHub URL
 }
 
 function create() {
-    // Background music
-    const music = this.sound.add('backgroundMusic');
-    music.play();
+    // Add click listener to start the audio after user interaction
+    this.input.once('pointerdown', () => {
+        const music = this.sound.add('backgroundMusic');
+        music.play({ loop: true });
+    });
 
     // Set background color to cyan (sky)
     this.cameras.main.setBackgroundColor('#00bcd4');
