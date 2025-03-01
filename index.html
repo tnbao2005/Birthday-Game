@@ -39,7 +39,6 @@ const messageText = [
 ];
 
 function preload() {
-    this.load.image('platform', 'https://i.imgur.com/rJL9mzG.png'); // Platform image
     this.load.audio('backgroundMusic', 'https://raw.githubusercontent.com/tnbao2005/Birthday-Game/refs/heads/main/assets/bgMusic.mp3'); // Correct GitHub URL
 }
 
@@ -53,9 +52,10 @@ function create() {
     // Set background color to cyan (sky)
     this.cameras.main.setBackgroundColor('#00bcd4');
     
-    // Platform (green platform)
+    // Platform (simple green rectangle)
     platform = this.physics.add.staticGroup();
-    platform.create(config.width / 2, config.height - 50, 'platform').setScale(1).refreshBody();
+    platform.create(config.width / 2, config.height - 50, null); // No image, just a rectangle
+    platform.setSize(config.width, 50).setColor(0x28a745); // Set color to green
 
     // Player setup: purple dot with light pink head
     player = this.physics.add.sprite(config.width / 2, config.height - 150, null);
