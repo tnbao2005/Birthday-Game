@@ -7,10 +7,16 @@
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; background: black; }
-        canvas { display: block; }
+        canvas { display: block; width: 100%; height: 100%; }
     </style>
 </head>
 <body>
+<!-- Background Music -->
+<audio id="backgroundMusic" autoplay loop>
+    <source src="https://www.youtube.com/watch?v=xGz-E8oqD9w?autoplay=1" type="audio/mp4">
+    Your browser does not support the audio tag.
+</audio>
+
 <script>
 const config = {
     type: Phaser.AUTO,
@@ -20,7 +26,7 @@ const config = {
     scene: { preload, create, update }
 };
 
-let player, messages, messageIndex = 0;
+let player, platform, messages, messageIndex = 0;
 const messageText = [
     "Hi babe, I know I'm not there with you right now but this is the best I could do for your birthday",
     "We've been together for 1,859 days and I hope this continues to go up",
@@ -34,13 +40,27 @@ const messageText = [
 
 function preload() {
     this.load.spritesheet('dude', 'https://i.imgur.com/g2zBAYk.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.image('platform', 'https://i.imgur.com/rJL9mzG.png'); // Platform image
+    this.load.audio('backgroundMusic', 'https://www.youtube.com/watch?v=xGz-E8oqD9w'); // Background music
 }
 
 function create() {
+    // Background music
+    const music = this.sound.add('backgroundMusic');
+    music.play();
+
     this.cameras.main.setBackgroundColor('#000');
     
+    // Platform
+    platform = this.physics.add.staticGroup();
+    platform.create(config.width / 2, config.height - 50, 'platform').setScale(1).refreshBody();
+    
+    // Player setup
     player = this.physics.add.sprite(100, config.height - 150, 'dude');
     player.setCollideWorldBounds(true);
+    player.setBounce(0.2);
+    this.physics.add.collider(player, platform); // Collide with platform
+    
     player.setVelocityX(50);
     
     this.anims.create({
@@ -51,6 +71,7 @@ function create() {
     });
     player.anims.play('walk', true);
 
+    // Centered text
     messages = this.add.text(config.width / 2, config.height / 2, messageText[messageIndex], {
         fontSize: '24px',
         fontFamily: 'Arial',
@@ -59,6 +80,7 @@ function create() {
         align: 'center'
     }).setOrigin(0.5).setAlpha(0);
     
+    // Show next message every 3 seconds
     this.time.addEvent({ delay: 3000, callback: showNextMessage, callbackScope: this, loop: true });
 }
 
@@ -74,6 +96,14 @@ function showNextMessage() {
 function update() {
     this.cameras.main.scrollX = player.x - config.width / 4;
 }
+
+// Update the game window size if the browser is resized
+window.addEventListener('resize', function() {
+    game.scale.resize(window.innerWidth, window.innerHeight);
+    config.width = window.innerWidth;
+    config.height = window.innerHeight;
+    game.renderer.resize(config.width, config.height);
+});
 
 const game = new Phaser.Game(config);
 </script>
